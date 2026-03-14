@@ -1,14 +1,27 @@
 // src/lib/supabase.ts
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+let _client: ReturnType<typeof createClient> | null = null
 
-if (!supabaseUrl || !supabaseAnon) {
-  throw new Error('Missing Supabase env vars. Copy .env.local.example → .env.local and fill in your keys.')
+function getClient(): ReturnType<typeof createClient> {
+  if (!_client) {
+    const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    if (!supabaseUrl || !supabaseAnon) {
+      throw new Error('Missing Supabase env vars. Copy .env.local.example → .env.local and fill in your keys.')
+    }
+    _client = createClient(supabaseUrl, supabaseAnon)
+  }
+  return _client
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnon)
+// Lazy proxy — client is only instantiated on first property access,
+// so missing env vars don't crash the app at module load / SSR.
+export const supabase = new Proxy({} as ReturnType<typeof createClient>, {
+  get(_, prop: string) {
+    return getClient()[prop as keyof ReturnType<typeof createClient>]
+  },
+})
 
 // ─── Typed helpers ────────────────────────────────────────────────────────────
 

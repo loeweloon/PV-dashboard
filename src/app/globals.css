@@ -3,6 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Font variables (system fallbacks — no network required) ────────────── */
+:root {
+  --font-syne:    'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-dm-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-dm-mono: 'DM Mono', ui-monospace, 'Courier New', monospace;
+}
+
 /* ─── Design tokens ──────────────────────────────────────────────────────── */
 :root {
   --bg:         #f0ede8;
