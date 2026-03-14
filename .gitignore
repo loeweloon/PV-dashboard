@@ -1,0 +1,8 @@
+# dependencies
+node_modules/
+
+# Next.js build output
+.next/
+
+# extracted zip contents (source already committed to src/)
+pv-dashboard/
